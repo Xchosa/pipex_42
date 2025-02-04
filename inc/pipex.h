@@ -6,7 +6,7 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 09:16:03 by poverbec          #+#    #+#             */
-/*   Updated: 2025/02/04 10:29:07 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/04 12:18:58 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,7 @@
 # include <sys/wait.h>
 # include <stdbool.h>
 
+
+void child_1()
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 09:19:20 by poverbec          #+#    #+#             */
-/*   Updated: 2025/02/04 12:00:37 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/04 12:22:23 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,25 @@ int main(int argc, char **argv)
 	}
 	if (pid_2 != 0)
 		ft_printf("parent 2 res id %d\n", res);
-	
+	close(fd[0]);
+	close(fd[1]);
 }
 
-	// void child_1()
-	// {
-	// 	"infile.txt", O_RDONLY | O_CREAT;
-	// }
+void child_1(char **argv)
+{
+	int error;
+	error = open(argv[1] O_RDONLY | O_CREAT);
+	
+	
+}
+check 
+// envp 
+// env
 
+void handle_cmd ()
+{
+	
+}
 // 	((argv[1]), O_RDONLY);
 // 	// if (input == -1);
 // 	// 	return (ft_putstr_fd("Could not Read file", STDERR_FILENO), EXIT_FAILURE);
