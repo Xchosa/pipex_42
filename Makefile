@@ -6,7 +6,7 @@
 #    By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/04 10:50:48 by poverbec          #+#    #+#              #
-#    Updated: 2025/02/04 10:10:01 by poverbec         ###   ########.fr        #
+#    Updated: 2025/02/08 14:16:47 by poverbec         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,8 @@ SOURCE_DIR = ./src/
 
 # ---------- Subjects ---------- #
 MY_SOURCES = \
-			$(SOURCE_DIR)main.c
+			$(SOURCE_DIR)main.c \
+			$(SOURCE_DIR)helper.c
 
 # ---------- Objects ---------- #
 MY_OBJECTS=$(MY_SOURCES:.c=.o)

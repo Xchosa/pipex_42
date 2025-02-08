@@ -6,7 +6,7 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 09:16:03 by poverbec          #+#    #+#             */
-/*   Updated: 2025/02/08 11:32:02 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/08 15:13:58 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,6 @@
 void child_1(char **argv, char **envp, int *pipe_fd);
 void child_2(char **argv, char **envp, int *pipe_fd);
 void print_envp(char **envp);
-void ft_command_two(char **argv, char **envp);
+void execute_command(char **argv, char **envp);
+
 #endif

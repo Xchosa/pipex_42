@@ -6,7 +6,7 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 09:19:20 by poverbec          #+#    #+#             */
-/*   Updated: 2025/02/08 12:45:52 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/08 16:37:40 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,72 +23,48 @@ It must take 4 arguments:
 */
 
 
-void print_envp(char **envp)
-{
-	int i = 0;
-	while (envp[i] != NULL)
-	{
-		ft_printf("%s\n", envp[i]);
-		i++;
-	}
-}
-
-void ft_command_one(char **argv, char **envp)
-{
-	char **command;
-	// its already checked if the file is readable 
-	
-
-	
-	command = ft_split(*argv[2], ' ');
-
-
-	// execute Command 
-	execve(command[0], command, envp);
-	ft_printf("\n \n what input ? %s \n", command);
-	print_envp(envp);
-	ft_printf("\n \n command content %s\n \n ",command);
-}
-
 void child_1(char **argv, char **envp, int *pipe_fd)
 {
-	int error;
-	error = open(argv[1], O_RDONLY);
-	if(error == -1)
+	int infile_fd;
+	infile_fd = open(argv[1], O_RDONLY);
+	if(infile_fd == -1)
 	{
 		return; //(ft_putstr_fd("Could not Read file", STDERR_FILENO), EXIT_FAILURE);
 		close(pipe_fd[0]); 
 		close(pipe_fd[1]);
 	}
 	//fflush(STDOUT_FILENO);
-	ft_printf("\n \n input of file %s\n", argv[2]);
-	// envp takes 3 argu path to eexecutable , array of argument strings, array of envirom strings. 
-	ft_command_one(&argv[2], envp);
-	close(pipe_fd[1]);// close the write end of the file
-	close(pipe_fd[0]);// close the read end of the pipe
+	dup2(infile_fd, STDIN_FILENO);// duplicates infilde_fd and replaces it with stdin (input from console)
+	//stdin reads now from infilde_fd 
+	close(infile_fd);
+	dup2(pipe_fd[1], STDOUT_FILENO);
+	// pipe output/ write end becomes the stdout  
+	
+	close(pipe_fd[0]);// close the read end of the pipe/ input
+	close(pipe_fd[1]);// close the write end of the file/ output
+	execute_command(&argv[2], envp);
 	//Data written to the write end of the pipe is buffered by the kernel until it is read from the read end of the pipe
 }
 
 void child_2(char **argv, char **envp, int *pipe_fd)// gets stdout of cmd2 written in file2, if not existing file gets created
 {
-	int input;
-	input = open(argv[4], O_WRONLY| O_CREAT | O_TRUNC, 0644 );
+	int output_fd;
+	output_fd = open(argv[4], O_WRONLY| O_CREAT | O_TRUNC, 0644 );
 	// name of outputfile, open file for writing only, creat if not exiting, truncated file to zero length, if it exists alreadyy
 	// file perm read , write for owner, read -only for others
-	if( input == -1)
+	if( output_fd == -1)
 	{
 		close(pipe_fd[0]);// read pipe / stdin
     	close(pipe_fd[1]); // write pipe / stdout
     	exit(EXIT_FAILURE);
 	}
-	// Redirecting input and output 
-	dup2(input, STDOUT_FILENO);// copys the input of the before to the file
+	dup2(output_fd, STDIN_FILENO);// copys the input of the before to the file
+	
 	close(pipe_fd[0]);// read pipe / stdin
     close(pipe_fd[1]); // write pipe / stdout
-	print_envp(envp);
-	
+	dup2(output_fd, STDOUT_FILENO);
+	execute_command(&argv[3], envp); // execude second cmd
 }
-
 
 
 
@@ -133,6 +109,7 @@ int main(int argc, char **argv, char **envp)
 			ft_printf("parent 2 res id %d\n", res2);
 		}
 	close(pipe_fd[1]);
+	close(pipe_fd[0]);
 	print_envp(envp); 
 }
 
