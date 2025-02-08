@@ -6,7 +6,7 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 09:19:20 by poverbec          #+#    #+#             */
-/*   Updated: 2025/02/04 12:22:23 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/08 11:36:50 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,31 +22,74 @@ It must take 4 arguments:
 • cmd1 and cmd2 are shell commands with their parameters
 */
 
-int main(int argc, char **argv)
+
+void print_envp(char **envp)
 {
-	int	fd[2];
+	int i = 0;
+	while (envp[i] != NULL)
+	{
+		ft_printf("%s\n", envp[i]);
+		i++;
+	}
+}
+
+void ft_command_one(char **argv, char **envp)
+{
+	char **command;
+	command = ft_split(*argv, ' ');
+	ft_printf("what input ? %s \n", command);
+	print_envp(envp);
+	ft_printf("commant content %s",command);
+}
+
+void child_1(char **argv, char **envp, int *pipe_fd)
+{
+	int error;
+	error = open(argv[1], O_RDONLY);
+	if(error == -1)
+	{
+		return; //(ft_putstr_fd("Could not Read file", STDERR_FILENO), EXIT_FAILURE);
+		close(pipe_fd[0]); 
+		close(pipe_fd[1]);
+	}
+	//fflush(STDOUT_FILENO);
+	ft_printf("input of file %s", argv[2]);
+	// envp takes 3 argu path to eexecutable , array of argument strings, array of envirom strings. 
+	ft_command_one(&argv[2], envp);
+	
+}
+
+// void child_2(char **argv, char **envp, int *pipe_fd)// gets stdout of cmd2 written in file2, if not existing file gets created
+// {
+// 	int error;
+// 	error = open(argv[1], O_RDONLY | O_CREAT);
+
+// }
+
+
+
+
+int main(int argc, char **argv, char **envp)
+{
+	int	pipe_fd[2];
 	int	pid_1;
 	int pid_2;
 	int res;
-	int test;
-	test = atoi(argv[1]);
 	if (argc == 2)
 	// if ((argc != 5) || *(argv[1]))
 		// return(EXIT_FAILURE);
 	
-	if	(pipe(fd) == -1)
+	if (pipe(pipe_fd) == -1)
 		return (ft_putstr_fd("Error, executing pipe", STDERR_FILENO), EXIT_FAILURE);
-	pid_1 = fork();
-	if(pid_1 == -1)
+	pid_1 = fork(); // 
+	if (pid_1 == -1)
 		return (ft_putstr_fd("Error, forking", STDERR_FILENO), EXIT_FAILURE);
-	if(pid_1 == 0)
+	if (pid_1 == 0)
 	{
-		ft_printf("its a child_1\n");
-		ft_printf("process id %d\n", pid_1);
-		ft_printf("test child_1 %d\n", test);
+		ft_printf("child process process id %d\n", pid_1);
+		child_1(argv, envp, pipe_fd);// cmd reads its input from file1 instead of keyboard 
 	}
-	wait(NULL);// waits for the childprocess to finish 
-	if (pid_1 != 0)
+	if (pid_1 != 0) // parent process has to wait until child is finished 
 	{
 		res = wait(NULL);
 		ft_printf("parent process 1 %d \n", res);
@@ -56,31 +99,21 @@ int main(int argc, char **argv)
 		return (ft_putstr_fd("Error, forking", STDERR_FILENO), EXIT_FAILURE);
 	if (pid_2 == 0)
 	{
-		ft_printf("its a child_2\n");
-		ft_printf("process id %d\n", pid_2);
-		ft_printf("test child_2 %d\n", test);
+		ft_printf("process id of child %d\n", pid_2);
 	}
 	if (pid_2 != 0)
-		ft_printf("parent 2 res id %d\n", res);
-	close(fd[0]);
-	close(fd[1]);
+		{
+			int res2;
+			res2 = wait(NULL);
+			ft_printf("parent 2 res id %d\n", res2);
+		}
+	close(pipe_fd[1]);
+	print_envp(envp); 
 }
 
-void child_1(char **argv)
-{
-	int error;
-	error = open(argv[1] O_RDONLY | O_CREAT);
-	
-	
-}
-check 
-// envp 
-// env
 
-void handle_cmd ()
-{
-	
-}
+
+
 // 	((argv[1]), O_RDONLY);
 // 	// if (input == -1);
 // 	// 	return (ft_putstr_fd("Could not Read file", STDERR_FILENO), EXIT_FAILURE);
