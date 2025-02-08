@@ -6,7 +6,7 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 09:19:20 by poverbec          #+#    #+#             */
-/*   Updated: 2025/02/08 11:36:50 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/08 12:45:52 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,18 @@ void print_envp(char **envp)
 void ft_command_one(char **argv, char **envp)
 {
 	char **command;
-	command = ft_split(*argv, ' ');
-	ft_printf("what input ? %s \n", command);
+	// its already checked if the file is readable 
+	
+
+	
+	command = ft_split(*argv[2], ' ');
+
+
+	// execute Command 
+	execve(command[0], command, envp);
+	ft_printf("\n \n what input ? %s \n", command);
 	print_envp(envp);
-	ft_printf("commant content %s",command);
+	ft_printf("\n \n command content %s\n \n ",command);
 }
 
 void child_1(char **argv, char **envp, int *pipe_fd)
@@ -53,18 +61,33 @@ void child_1(char **argv, char **envp, int *pipe_fd)
 		close(pipe_fd[1]);
 	}
 	//fflush(STDOUT_FILENO);
-	ft_printf("input of file %s", argv[2]);
+	ft_printf("\n \n input of file %s\n", argv[2]);
 	// envp takes 3 argu path to eexecutable , array of argument strings, array of envirom strings. 
 	ft_command_one(&argv[2], envp);
-	
+	close(pipe_fd[1]);// close the write end of the file
+	close(pipe_fd[0]);// close the read end of the pipe
+	//Data written to the write end of the pipe is buffered by the kernel until it is read from the read end of the pipe
 }
 
-// void child_2(char **argv, char **envp, int *pipe_fd)// gets stdout of cmd2 written in file2, if not existing file gets created
-// {
-// 	int error;
-// 	error = open(argv[1], O_RDONLY | O_CREAT);
-
-// }
+void child_2(char **argv, char **envp, int *pipe_fd)// gets stdout of cmd2 written in file2, if not existing file gets created
+{
+	int input;
+	input = open(argv[4], O_WRONLY| O_CREAT | O_TRUNC, 0644 );
+	// name of outputfile, open file for writing only, creat if not exiting, truncated file to zero length, if it exists alreadyy
+	// file perm read , write for owner, read -only for others
+	if( input == -1)
+	{
+		close(pipe_fd[0]);// read pipe / stdin
+    	close(pipe_fd[1]); // write pipe / stdout
+    	exit(EXIT_FAILURE);
+	}
+	// Redirecting input and output 
+	dup2(input, STDOUT_FILENO);// copys the input of the before to the file
+	close(pipe_fd[0]);// read pipe / stdin
+    close(pipe_fd[1]); // write pipe / stdout
+	print_envp(envp);
+	
+}
 
 
 
@@ -75,6 +98,7 @@ int main(int argc, char **argv, char **envp)
 	int	pid_1;
 	int pid_2;
 	int res;
+	int res2;
 	if (argc == 2)
 	// if ((argc != 5) || *(argv[1]))
 		// return(EXIT_FAILURE);
@@ -86,13 +110,14 @@ int main(int argc, char **argv, char **envp)
 		return (ft_putstr_fd("Error, forking", STDERR_FILENO), EXIT_FAILURE);
 	if (pid_1 == 0)
 	{
-		ft_printf("child process process id %d\n", pid_1);
+		int id = getpid();
+		ft_printf("child process process id %d\n", id);
 		child_1(argv, envp, pipe_fd);// cmd reads its input from file1 instead of keyboard 
 	}
+	res = wait(NULL);
 	if (pid_1 != 0) // parent process has to wait until child is finished 
 	{
-		res = wait(NULL);
-		ft_printf("parent process 1 %d \n", res);
+		ft_printf("parent 1 process  %d \n", res);
 	}
 	pid_2 = fork();
 	if (pid_2 == -1)
@@ -100,11 +125,11 @@ int main(int argc, char **argv, char **envp)
 	if (pid_2 == 0)
 	{
 		ft_printf("process id of child %d\n", pid_2);
+		child_2(argv, envp, pipe_fd);
 	}
+	res2 = wait(NULL);
 	if (pid_2 != 0)
 		{
-			int res2;
-			res2 = wait(NULL);
 			ft_printf("parent 2 res id %d\n", res2);
 		}
 	close(pipe_fd[1]);
