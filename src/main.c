@@ -6,7 +6,7 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 09:19:20 by poverbec          #+#    #+#             */
-/*   Updated: 2025/02/08 16:37:40 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/10 12:12:46 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,26 @@ It must take 4 arguments:
 void child_1(char **argv, char **envp, int *pipe_fd)
 {
 	int infile_fd;
-	infile_fd = open(argv[1], O_RDONLY);
+	infile_fd = open(argv[1], O_RDONLY);// 0 und 1 belegt wird zu 3
 	if(infile_fd == -1)
 	{
 		return; //(ft_putstr_fd("Could not Read file", STDERR_FILENO), EXIT_FAILURE);
 		close(pipe_fd[0]); 
 		close(pipe_fd[1]);
 	}
-	//fflush(STDOUT_FILENO);
+	
+	
+	// fflush(stdout);
+	
+	char **command;
+	// its already checked if the file is readable 
+	
+	command = ft_split(argv[2], ' ');
+	char *path;
+	path = getpath(command[0], envp);// command 0 is 'ls -l"and search for 
+	ft_printf("hallo :)\n");
+	ft_printf("\n \n what path %s \n", path);// print in the pipe 
+	
 	dup2(infile_fd, STDIN_FILENO);// duplicates infilde_fd and replaces it with stdin (input from console)
 	//stdin reads now from infilde_fd 
 	close(infile_fd);
@@ -42,7 +54,7 @@ void child_1(char **argv, char **envp, int *pipe_fd)
 	
 	close(pipe_fd[0]);// close the read end of the pipe/ input
 	close(pipe_fd[1]);// close the write end of the file/ output
-	execute_command(&argv[2], envp);
+	execute_command(argv[2], envp);
 	//Data written to the write end of the pipe is buffered by the kernel until it is read from the read end of the pipe
 }
 
@@ -63,7 +75,7 @@ void child_2(char **argv, char **envp, int *pipe_fd)// gets stdout of cmd2 writt
 	close(pipe_fd[0]);// read pipe / stdin
     close(pipe_fd[1]); // write pipe / stdout
 	dup2(output_fd, STDOUT_FILENO);
-	execute_command(&argv[3], envp); // execude second cmd
+	execute_command(argv[3], envp); // execude second cmd
 }
 
 
@@ -87,7 +99,7 @@ int main(int argc, char **argv, char **envp)
 	if (pid_1 == 0)
 	{
 		int id = getpid();
-		ft_printf("child process process id %d\n", id);
+		ft_printf("child process process  waits for id %d\n", id);
 		child_1(argv, envp, pipe_fd);// cmd reads its input from file1 instead of keyboard 
 	}
 	res = wait(NULL);
@@ -110,6 +122,7 @@ int main(int argc, char **argv, char **envp)
 		}
 	close(pipe_fd[1]);
 	close(pipe_fd[0]);
+	ft_printf("\n \n");
 	print_envp(envp); 
 }
 
