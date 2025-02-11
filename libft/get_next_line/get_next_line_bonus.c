@@ -6,12 +6,11 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 16:26:59 by poverbec          #+#    #+#             */
-/*   Updated: 2025/01/29 16:01:44 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/11 14:30:15 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./get_next_line_bonus.h"
-
 
 int	handle_buffer_zero(char **buffer, int bytes_read,
 char **tmp_buffer, char **line)

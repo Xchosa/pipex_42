@@ -6,12 +6,11 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 17:16:33 by poverbec          #+#    #+#             */
-/*   Updated: 2025/01/29 15:54:30 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/11 14:29:24 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./libft.h"
-
 
 long	ft_atol(char *str)
 {
