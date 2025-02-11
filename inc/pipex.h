@@ -6,7 +6,7 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 09:16:03 by poverbec          #+#    #+#             */
-/*   Updated: 2025/02/10 10:06:18 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/11 10:16:39 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,11 @@
 # include <stdbool.h>
 
 
-void child_1(char **argv, char **envp, int *pipe_fd);
-void child_2(char **argv, char **envp, int *pipe_fd);
-void print_envp(char **envp);
-void execute_command(char *cmd, char **envp);
-char  *getpath(char *cmd1, char **envp);
+void	child_1(char **argv, char **envp, int *pipe_fd);
+void	parent(char **argv, char **envp, int *pipe_fd);
+void	print_envp(char **envp);
+void	execute_command(char *cmd, char **envp);
+char 	*getpath(char *cmd1, char **envp);
+void	free_splited_string(char **splited_string);
 
 #endif

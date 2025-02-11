@@ -1,4 +1,5 @@
 **/*.o
 **/*.out
 **/*main
-checker_Mac
+outfile
+main_dup.c

@@ -6,7 +6,7 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:15:16 by poverbec          #+#    #+#             */
-/*   Updated: 2025/02/10 12:24:22 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/11 13:10:23 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,31 +25,18 @@ void print_envp(char **envp)
 void execute_command(char *cmd, char **envp)
 {
 	char **command;
-	// its already checked if the file is readable 
-	
 	command = ft_split(cmd, ' ');
-	// execute Command 
 	char *path;
 	
-	//access(/usr/local/bin/ls, 3)
 	path = getpath(command[0], envp);// command 0 is 'ls -l"and search for 
-	ft_printf("\n \n what path %s \n", path);// print in the pipe 
-	if (execve(path, command, envp) == -1)
-	// does not return if successful 
-	// process image is replaced by the new programm 
-		return;
-		
-	// her find path and counting it 
-	// output gives 4 
-// ./pipex infile "grep a1" "wc -w" outfile
-// < infile grep a1 | wc -w > outfile
-// update git ignore file with inflie and outfile 
+	if(path == NULL)
+	{
+		ft_putstr_fd( "cmd not fould\n", STDERR_FILENO);
+		exit(EXIT_FAILURE);
+	}
 	
-	//If command[0] is "grep", then execve() 
-	//will attempt to execute grep as a new program, replacing the current process
-	ft_printf("\n \n what input ? %s \n", command);
-	print_envp(envp);
-	
+	execve(path, command, envp);
+	return;
 }
 
 char  *getpath(char *cmd1, char **envp)
@@ -62,24 +49,43 @@ char  *getpath(char *cmd1, char **envp)
 	while (ft_strncmp("PATH=", path , 5) != 0)
 	{
 		path = envp[i];
-		i ++;
-		ft_printf("path %s\n",path);
+		i++;
 	}
+	// ft_printf("path %s\n",path);
 	path += 5; //without path= 
-	ft_printf("\n correct path in envp: %s \n ", path);
+	// ft_printf("\n correct path in envp: %s \n ", path);
 	
 	correct_path = ft_split(path, ':');// in the path line 2D array
 	cmd1= ft_strjoin("/", cmd1);
-	ft_printf(" correct command %s\n", cmd1);
+	// ft_printf("correct command:  %s\n", cmd1);
 	i = 0;
-	ft_printf(" correct path %s\n", correct_path[i]);
-	while((access(correct_path_with_cmd, X_OK) != 0))
+	while((correct_path[i] != NULL))
 	{
 		correct_path_with_cmd = ft_strjoin(correct_path[i], cmd1);// user/bin und ls -l 
-		ft_printf(" correct command %s\n", correct_path_with_cmd);
-		if(access(correct_path_with_cmd, X_OK) != 0))
-			correct_path_with_cmd++;
+		// ft_printf(" access path with correct command?:\n %s\n", correct_path_with_cmd);
+		if(access(correct_path_with_cmd, X_OK) == 0)
+		{
+			// char *cpy_correct_path;
+			// cpy_correct_path = ft_strdup(correct_path_with_cmd[i]);
+			free_splited_string(correct_path);
+			return (correct_path_with_cmd);;
+		}
+		free(correct_path_with_cmd);
+		i++;
 	}
-	return (*correct_path);
+	free_splited_string(correct_path);
+	return (NULL);
+}
+
+void	free_splited_string(char **splited_string)
+{
+	int i;
+	i = 0;
+	while(splited_string[i] != NULL)
+	{
+		free(splited_string[i]);
+		i++;
+	}
+	free(splited_string);
 }
 
