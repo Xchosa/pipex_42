@@ -2,4 +2,6 @@
 **/*.out
 **/*main
 outfile
-main_dup.c
+.vscode
+infile
+outfile

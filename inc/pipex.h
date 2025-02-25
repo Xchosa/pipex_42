@@ -6,7 +6,7 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 09:16:03 by poverbec          #+#    #+#             */
-/*   Updated: 2025/02/11 16:12:13 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/18 15:59:58 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,5 @@ void	parent(char **argv, char **envp, int *pipe_fd);
 void	execute_command(char *cmd, char **envp);
 char	*getpath(char *cmd1, char **envp);
 void	free_splited_string(char **splited_string);
+void	leaks(void);
 #endif

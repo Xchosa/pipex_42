@@ -6,7 +6,7 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:15:16 by poverbec          #+#    #+#             */
-/*   Updated: 2025/02/11 16:23:38 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/18 16:00:21 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,10 @@ void	free_splited_string(char **splited_string)
 		i++;
 	}
 	free(splited_string);
+}
+
+void	leaks(void)
+{
+	ft_printf("\n");
+	system("leaks push_swap");
 }

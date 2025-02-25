@@ -6,22 +6,18 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 09:19:20 by poverbec          #+#    #+#             */
-/*   Updated: 2025/02/11 16:09:02 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/18 16:14:38 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
 
-#include <stdio.h> 
-
-// exclude stdio.h 
 /*
 ./pipex file1 cmd1 cmd2 file2
-
-
+// ls gets malloced , cant be freed. 
+// execute path envp cant be freed its reachable 
 ./pipex infile "grep a1" "wc -w" outfile
 */
-
 // redirects infilde_fd and replaces it with stdin (input from console)
 // pipe output/ write end becomes the stdout  
 // close the read end of the pipe/ input

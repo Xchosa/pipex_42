@@ -6,13 +6,13 @@
 #    By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/04 10:50:48 by poverbec          #+#    #+#              #
-#    Updated: 2025/02/13 14:35:52 by poverbec         ###   ########.fr        #
+#    Updated: 2025/02/25 13:37:02 by poverbec         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = pipex
 CC		= cc
-CFLAGS	= -Wall -Wextra -Werror
+CFLAGS	= -Wall -Wextra -Werror -g
 LIBFT	= ./libft/libft.a
 SOURCE_DIR = ./src/
 
@@ -20,9 +20,6 @@ SOURCE_DIR = ./src/
 MY_SOURCES = \
 			$(SOURCE_DIR)main.c \
 			$(SOURCE_DIR)helper.c
-MY_SOURCES_BONUS = \
-			$(SOURCE_DIR)main_bonus.c \
-			$(SOURCE_DIR)helper_bonus.c
 
 # ---------- Objects ---------- #
 MY_OBJECTS=$(MY_SOURCES:.c=.o)
@@ -51,19 +48,6 @@ $(NAME): $(MY_OBJECTS) $(LIBFT)
 		exit 1; \
 	fi
 
-
-
-bonus: $(MY_OBJECTS_BONUS) $(LIBFT)
-	@echo "$(BIYellow) Compiling  Bonus $(Color_Off)"
-	@$(CC) $(CFLAGS) $(MY_OBJECTS_BONUS) $(LIBFT) -o $(NAME)
-	@if [ -f $(NAME) ]; then \
-		echo "$(On_Yellow)------------------------------------------$(Color_Off)"; \
-		echo "$(BGreen)PROCESS COMPLETED SUCCESSFULLY!$(Color_Off)"; \
-		echo "$(On_Green)------------------------------------------$(Color_Off)"; \
-	else \
-		echo "$(Red)failed to compile $(NAME) $(Color_Off)"; \
-		exit 1; \
-	fi
 	
 $(LIBFT):
 	make -C ./libft

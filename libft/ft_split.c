@@ -6,11 +6,12 @@
 /*   By: poverbec <poverbec@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 16:21:58 by poverbec          #+#    #+#             */
-/*   Updated: 2024/12/05 12:05:13 by poverbec         ###   ########.fr       */
+/*   Updated: 2025/02/17 14:12:41 by poverbec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./libft.h"
+
 /*
 Allocates (with malloc(3)) and returns 
 an array of strings obtained by splitting
@@ -18,101 +19,84 @@ an array of strings obtained by splitting
 The array must end with a NULL pointer.
 */
 
-static size_t	ft_search_c(char const *s, char c);
-static int		ft_cpy_s_parts(char const *s, char c, size_t counter_substr,
-					char **splited_string);
-static size_t	ft_check_len_s_a(char const *s, char c);
-static void		ft_free_splited_string(char **splited_string, size_t count);
+static size_t	count_sub_strings(char const *s, char c);
+static char		**str_split(char **substring, char const *s, char c);
+static void		free_string(char **str);
 
 char	**ft_split(char const *s, char c)
 {
-	char	**splited_string;
-	size_t	counter_substr;
-	int		control_malloc_substr;
+	char	**substrings;
+	size_t	nbr_strings;
 
 	if (!s)
 		return (NULL);
-	counter_substr = ft_search_c(s, c);
-	splited_string = (char **)malloc((counter_substr + 1) * sizeof(char *));
-	if (splited_string == NULL)
+	nbr_strings = count_sub_strings(s, c);
+	substrings = (char **)malloc((nbr_strings + 1) *(sizeof(char *)));
+	if (!substrings)
 		return (NULL);
-	control_malloc_substr = ft_cpy_s_parts(s, c, counter_substr,
-			splited_string);
-	if (control_malloc_substr != 0)
+	if (!str_split(substrings, s, c))
 	{
-		ft_free_splited_string(splited_string, control_malloc_substr);
+		free_string(substrings);
 		return (NULL);
 	}
-	splited_string[counter_substr] = NULL;
-	return (splited_string);
+	return (substrings);
 }
 
-static size_t	ft_search_c(char const *s, char c)
+static size_t	count_sub_strings(char const *s, char c)
 {
+	size_t	nbr;
 	size_t	i;
-	size_t	counter_substr;
 
+	nbr = 0;
 	i = 0;
-	counter_substr = 0;
-	while (s[i] != '\0')
-	{
-		if (s[i] != c)
-		{
-			counter_substr++;
-			while (s[i] != '\0' && s[i] != c)
-				i++;
-		}
-		else
-			i++;
-	}
-	return (counter_substr);
-}
-
-int	ft_cpy_s_parts(char const *s, char c, size_t counter_substr,
-		char **splited_string)
-{
-	size_t	i;
-	size_t	a;
-	size_t	sub_len;
-
-	i = 0;
-	a = 0;
-	while (s[i] != '\0' && a < counter_substr)
+	while (s[i])
 	{
 		while (s[i] == c)
 			i++;
-		sub_len = ft_check_len_s_a(s + i, c);
 		if (s[i] != '\0')
-		{
-			splited_string[a] = (char *)malloc((sub_len + 1) * sizeof(char));
-			if (splited_string[a] == NULL)
-			{
-				ft_free_splited_string(splited_string, a);
-				return (-1);
-			}
-			ft_strlcpy(splited_string[a], s + i, sub_len + 1);
-			i += sub_len;
-			a++;
-		}
+			nbr++;
+		while (s[i] != c && s[i] != '\0')
+			i++;
+		while (s[i] == c && s[i] != '\0')
+			i++;
 	}
-	return (0);
+	return (nbr);
 }
 
-static size_t	ft_check_len_s_a(char const *s, char c)
+char	**str_split(char **substring, char const *s, char c)
 {
-	size_t	s_len;
+	size_t	a;
+	size_t	len_substring;
 
-	s_len = 0;
-	while (s[s_len] != c && s[s_len] != '\0')
+	a = 0;
+	while (*s)
 	{
-		s_len++;
+		if (*s != c)
+		{
+			len_substring = 0;
+			while (s[len_substring] != '\0' && s[len_substring] != c)
+				len_substring++;
+			substring[a] = ft_substr(s, 0, len_substring);
+			if (!substring[a])
+				return (NULL);
+			a++;
+			s += len_substring;
+		}
+		else
+			s++;
 	}
-	return (s_len);
+	return (substring[a] = NULL, substring);
 }
 
-static void	ft_free_splited_string(char **splited_string, size_t count)
+static void	free_string(char **str)
 {
-	while (count > 0)
-		free(splited_string[--count]);
-	free(splited_string);
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		free(str[i]);
+		i++;
+	}
+	free(str);
 }
